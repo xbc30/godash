@@ -3,7 +3,24 @@ package godash
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
+
+// ArrayChunk单元测试用例
+func TestArrayChunk(t *testing.T) {
+	t.Run("support int types", func(t *testing.T) {
+		in := []int{2, 7, 11, 15, 9}
+		out := make([][]int, 0)
+		chunk := 2
+
+		err := ArrayChunk(in, &out, chunk)
+
+		expected := [][]int{{2, 7}, {11, 15}, {9}}
+		assert.NoError(t, err)
+		assert.Equal(t, expected, out)
+	})
+}
 
 // ArrayIntChunk单元测试用例
 func TestArrayIntChunk(t *testing.T) {
@@ -70,5 +87,43 @@ func BenchmarkArrayIntDifference(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ArrayIntDifference(arr, arrAnother)
+	}
+}
+
+// ArrayIntFill单元测试用例
+func TestArrayIntFill(t *testing.T) {
+	cases := []struct {
+		name       string
+		inputArr   []int
+		inputVal   int
+		inputStart int
+		inputEnd   int
+		expect     []int
+	}{
+		{"ArrayIntFill test 1", []int{1, 2, 3}, 4, 1, 2, []int{1, 4, 3}},
+	}
+
+	//	开始测试
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			ret := ArrayIntFill(c.inputArr, c.inputVal, c.inputStart, c.inputEnd)
+			if !reflect.DeepEqual(ret, c.expect) {
+				t.Fatalf("expected: %v, but got: %v, with inputs: %v",
+					c.expect, ret, c.inputArr)
+			}
+		})
+	}
+}
+
+// ArrayIntFill基准测试用例
+func BenchmarkArrayIntFill(b *testing.B) {
+	arr := []int{1, 2, 3, 4, 5}
+	val := 4
+	start := 1
+	end := 2
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		ArrayIntFill(arr, val, start, end)
 	}
 }

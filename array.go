@@ -1,13 +1,43 @@
 package godash
 
 import (
+	"fmt"
 	"math"
+	"reflect"
 )
 
 // @Method: ArrayIntChunk
 // @Description: 将数组（array）拆分成多个 size 长度的区块，并将这些区块组成一个新数组。 如果array 无法被分割成全部等长的区块，那么最后剩余的元素将组成一个区块
-// @param: 1.arr []int 2.size int
-// @return: [][]int
+// @Param: 1.arr []int 2.size int
+// @Return: [][]int
+// TODO: 测试不通过（04.30）
+func ArrayChunk(in, out interface{}, size int) error {
+	input := reflect.ValueOf(in)
+	output := reflect.ValueOf(out)
+
+	if input.Kind() == reflect.Slice || input.Kind() == reflect.Array {
+		chunkNum := int(math.Ceil(float64(input.Len()) / float64(size)))
+		result := reflect.MakeSlice(output.Elem().Type(), 0, chunkNum)
+
+		for i := 0; i < chunkNum; i++ {
+			if i == (chunkNum - 1) {
+				result = reflect.AppendSlice(result, reflect.ValueOf(input.Slice(i*size, input.Len())))
+			} else {
+				result = reflect.AppendSlice(result, reflect.ValueOf(input.Slice(i*size, i*size+size)))
+			}
+		}
+		output.Elem().Set(result)
+
+		return nil
+	} else {
+		return fmt.Errorf("ArrayChunk input type cannot be (%s)", input.Kind())
+	}
+}
+
+// @Method: ArrayIntChunk
+// @Description: 将数组（array）拆分成多个 size 长度的区块，并将这些区块组成一个新数组。 如果array 无法被分割成全部等长的区块，那么最后剩余的元素将组成一个区块
+// @Param: 1.arr []int 2.size int
+// @Return: [][]int
 func ArrayIntChunk(arr []int, size int) [][]int {
 	chunkNum := int(math.Ceil(float64(len(arr)) / float64(size)))
 	var retArr [][]int
@@ -22,6 +52,10 @@ func ArrayIntChunk(arr []int, size int) [][]int {
 	return retArr
 }
 
+// @Method: ArrayStringChunk
+// @Description: 将数组（array）拆分成多个 size 长度的区块，并将这些区块组成一个新数组。 如果array 无法被分割成全部等长的区块，那么最后剩余的元素将组成一个区块
+// @Param: 1.arr []string 2.size int
+// @Return: [][]string
 func ArrayStringChunk(arr []string, size int) [][]string {
 	chunkNum := int(math.Ceil(float64(len(arr)) / float64(size)))
 	var retArr [][]string
@@ -38,8 +72,8 @@ func ArrayStringChunk(arr []string, size int) [][]string {
 
 // @Method: ArrayIntDifference
 // @Description: 创建一个具有唯一array值的数组，每个值不包含在其他给定的数组中。（注：即创建一个新数组，这个数组中的值，为第一个数字（array 参数）排除了给定数组中的值。）该方法使用 SameValueZero做相等比较。结果值的顺序是由第一个数组中的顺序确定
-// @param: 1.arr []int 2.arrAnother []int
-// @return: []int
+// @Param: 1.arr []int 2.arrAnother []int
+// @Return: []int
 func ArrayIntDifference(arr []int, arrAnother []int) []int {
 	var retArr []int
 
@@ -53,6 +87,22 @@ func ArrayIntDifference(arr []int, arrAnother []int) []int {
 		}
 		if !isDif {
 			retArr = append(retArr, dif)
+		}
+	}
+	return retArr
+}
+
+// @method: ArrayIntFill
+// @Description: 使用 value 值来填充（替换） array，从start位置开始, 到end位置结束（但不包含end位置）
+// @Param: 1.arr []int 2.val int 3.start int 4.end int
+// @Return: []int
+func ArrayIntFill(arr []int, val int, start int, end int) []int {
+	var retArr []int
+	for i := 0; i < len(arr); i++ {
+		if i >= start && i < end {
+			retArr = append(retArr, val)
+		} else {
+			retArr = append(retArr, arr[i])
 		}
 	}
 	return retArr
