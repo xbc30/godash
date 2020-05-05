@@ -3,7 +3,6 @@ package godash
 import (
 	"fmt"
 	"math"
-	"reflect"
 )
 
 // @Method: ArrayIntChunk
@@ -11,27 +10,44 @@ import (
 // @Param: 1.arr []int 2.size int
 // @Return: [][]int
 // TODO: 测试不通过（04.30）
-func ArrayChunk(in, out interface{}, size int) error {
-	input := reflect.ValueOf(in)
-	output := reflect.ValueOf(out)
+// func ArrayChunk(in interface{}, out []interface{}, size int) error {
+// 	input := reflect.ValueOf(in)
+// 	output := reflect.ValueOf(out)
 
-	if input.Kind() == reflect.Slice || input.Kind() == reflect.Array {
-		chunkNum := int(math.Ceil(float64(input.Len()) / float64(size)))
-		result := reflect.MakeSlice(output.Elem().Type(), 0, chunkNum)
+// 	if input.Kind() == reflect.Slice || input.Kind() == reflect.Array {
+// 		chunkNum := int(math.Ceil(float64(input.Len()) / float64(size)))
+// 		result := reflect.MakeSlice(output.Elem().Type(), 0, chunkNum)
 
-		for i := 0; i < chunkNum; i++ {
-			if i == (chunkNum - 1) {
-				result = reflect.AppendSlice(result, reflect.ValueOf(input.Slice(i*size, input.Len())))
-			} else {
-				result = reflect.AppendSlice(result, reflect.ValueOf(input.Slice(i*size, i*size+size)))
-			}
-		}
-		output.Elem().Set(result)
+// 		for i := 0; i < chunkNum; i++ {
+// 			if i == (chunkNum - 1) {
+// 				chunkArr := reflect.MakeSlice(output.Elem().Type(), 0, 0)
+// 				chunkArr = reflect.AppendSlice(chunkArr, input.Slice(i*size, input.Len()))
+// 				result = reflect.AppendSlice(result, chunkArr)
+// 			} else {
+// 				chunkArr := reflect.MakeSlice(output.Elem().Type(), 0, 0)
+// 				chunkArr = reflect.AppendSlice(chunkArr, input.Slice(i*size, i*size+size))
+// 				result = reflect.AppendSlice(result, chunkArr)
+// 			}
+// 		}
+// 		output.Elem().Set(result)
 
-		return nil
-	} else {
-		return fmt.Errorf("ArrayChunk input type cannot be (%s)", input.Kind())
+// 		return nil
+// 	} else {
+// 		return fmt.Errorf("ArrayChunk input type cannot be (%s)", input.Kind())
+// 	}
+// }
+
+func ArrayChunk(input []interface{}, size int) []interface{} {
+	length := len(input)
+	count := int(math.Ceil(float64(length) / float64(size)))
+	ret := make([]interface{}, count)
+	for i := 0; i < count-1; i++ {
+		ret[i] = input[i*size : (i+1)*size]
+		fmt.Println(ret)
 	}
+	ret[count-1] = input[size*(count-1):]
+
+	return ret
 }
 
 // @Method: ArrayIntChunk
