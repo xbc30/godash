@@ -3,8 +3,9 @@
 ### List
 
 * Array
-  * chunk
-  * diffenece
+  * [Chunk](https://github.com/xbc30/godash/blob/master/array.go#L40)
+  * [Diffenece]()
+  * [Fill]()
 
 ### Unit Test & Benchmark Test
 

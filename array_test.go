@@ -3,6 +3,8 @@ package godash
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // ArrayChunk单元测试用例
@@ -20,27 +22,41 @@ import (
 // 	})
 // }
 func TestArrayChunk(t *testing.T) {
-	cases := []struct {
-		name       string
-		inputArr   []int
-		inputChunk int
-		expect     [][]int
-	}{
-		{"ArrayChunk test 1", []int{2, 7, 11, 15, 9}, 2, [][]int{{2, 7}, {11, 15}, {9}}},
-		{"ArrayChunk test 2", []int{3, 2, 4, 6}, 3, [][]int{{3, 2, 4}, {6}}},
-	}
+	t.Run("ArrayChunk Test", func(t *testing.T) {
+		in := []int{2, 7, 11, 15, 9}
 
-	//	开始测试
-	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			ret := ArrayIntChunk(c.inputArr, c.inputChunk)
-			if !reflect.DeepEqual(ret, c.expect) {
-				t.Fatalf("expected: %v, but got: %v, with inputs: %v",
-					c.expect, ret, c.inputArr)
-			}
-		})
-	}
+		tArrayChunk := ArrayChunk(IntToInterface(in), 2)
+		assert.Equal(t, [][]interface{}{{2, 7}, {11, 15}, {9}}, tArrayChunk)
+	})
 }
+
+// func TestArrayChunk(t *testing.T) {
+// 	cases := []struct {
+// 		name       string
+// 		inputArr   []int
+// 		inputChunk int
+// 		expect     [][]int
+// 	}{
+// 		{"ArrayChunk test 1", []int{2, 7, 11, 15, 9}, 2, [][]int{{2, 7}, {11, 15}, {9}}},
+// 		{"ArrayChunk test 2", []int{3, 2, 4, 6}, 3, [][]int{{3, 2, 4}, {6}}},
+// 	}
+
+// 	//	开始测试
+
+// 	for _, c := range cases {
+// 		t.Run(c.name, func(t *testing.T) {
+// 			var inputArray = make([]interface{}, len(c.inputArr))
+// 			for index, item := range c.inputArr {
+// 				inputArray[index] = item
+// 			}
+// 			ret := ArrayChunk(inputArray, c.inputChunk)
+// 			if !reflect.DeepEqual(ret, c.expect) {
+// 				t.Fatalf("expected: %v, but got: %v, with inputs: %v",
+// 					c.expect, ret, c.inputArr)
+// 			}
+// 		})
+// 	}
+// }
 
 // ArrayIntChunk单元测试用例
 func TestArrayIntChunk(t *testing.T) {
