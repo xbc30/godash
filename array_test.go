@@ -27,6 +27,7 @@ func TestArrayChunk(t *testing.T) {
 
 		tArrayChunk := ArrayChunk(IntToInterface(in), 2)
 		assert.Equal(t, [][]interface{}{{2, 7}, {11, 15}, {9}}, tArrayChunk)
+		
 	})
 }
 

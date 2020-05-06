@@ -30,6 +30,15 @@ func ArrayInterfaceToInt(src []interface{}) []int {
 	return output
 }
 
+func ArrayInterfaceToString(src []interface{}) []string {
+	var output = make([]string, len(src))
+	for index, item := range src {
+		item, _ := item.(string)
+		output[index] = item
+	}
+	return output
+}
+
 //IntToInterface  数据转换
 func IntToInterface(ids []int) (ret []interface{}) {
 	filter := make(map[interface{}]int, len(ids))
@@ -50,7 +59,7 @@ func IntToInterface(ids []int) (ret []interface{}) {
 }
 
 //StringsToInterface  数据转换
-func StringsToInterface(ids []string) (ret []interface{}) {
+func StringToInterface(ids []string) (ret []interface{}) {
 	filter := make(map[interface{}]int, len(ids))
 	ret = make([]interface{}, 0, len(ids))
 	if len(ids) == 0 {
