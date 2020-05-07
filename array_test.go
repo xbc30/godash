@@ -8,56 +8,25 @@ import (
 )
 
 // ArrayChunk单元测试用例
-// func TestArrayChunk(t *testing.T) {
-// 	t.Run("support int types", func(t *testing.T) {
-// 		in := []int{2, 7, 11, 15, 9}
-// 		out := make([]interface{}, 0)
-// 		chunk := 2
-
-// 		err := ArrayChunk(in, &out, chunk)
-
-// 		expected := [][]int{{2, 7}, {11, 15}, {9}}
-// 		assert.NoError(t, err)
-// 		assert.Equal(t, expected, out)
-// 	})
-// }
 func TestArrayChunk(t *testing.T) {
 	t.Run("ArrayChunk Test", func(t *testing.T) {
-		in := []int{2, 7, 11, 15, 9}
+		input := []int{2, 7, 11, 15, 9}
 
-		tArrayChunk := ArrayChunk(IntToInterface(in), 2)
-		assert.Equal(t, [][]interface{}{{2, 7}, {11, 15}, {9}}, tArrayChunk)
-		
+		outputChunk := ArrayChunk(ArrayIntToInterface(input), 2)
+		assert.Equal(t, [][]interface{}{{2, 7}, {11, 15}, {9}}, outputChunk)
+
 	})
 }
 
-// func TestArrayChunk(t *testing.T) {
-// 	cases := []struct {
-// 		name       string
-// 		inputArr   []int
-// 		inputChunk int
-// 		expect     [][]int
-// 	}{
-// 		{"ArrayChunk test 1", []int{2, 7, 11, 15, 9}, 2, [][]int{{2, 7}, {11, 15}, {9}}},
-// 		{"ArrayChunk test 2", []int{3, 2, 4, 6}, 3, [][]int{{3, 2, 4}, {6}}},
-// 	}
+// ArrayIntChunk基准测试用例
+func BenchmarkArrayChunk(b *testing.B) {
+	input := []int{1, 2, 3, 4, 5}
 
-// 	//	开始测试
-
-// 	for _, c := range cases {
-// 		t.Run(c.name, func(t *testing.T) {
-// 			var inputArray = make([]interface{}, len(c.inputArr))
-// 			for index, item := range c.inputArr {
-// 				inputArray[index] = item
-// 			}
-// 			ret := ArrayChunk(inputArray, c.inputChunk)
-// 			if !reflect.DeepEqual(ret, c.expect) {
-// 				t.Fatalf("expected: %v, but got: %v, with inputs: %v",
-// 					c.expect, ret, c.inputArr)
-// 			}
-// 		})
-// 	}
-// }
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		ArrayChunk(ArrayIntToInterface(input), 2)
+	}
+}
 
 // ArrayIntChunk单元测试用例
 func TestArrayIntChunk(t *testing.T) {
@@ -85,11 +54,11 @@ func TestArrayIntChunk(t *testing.T) {
 
 // ArrayIntChunk基准测试用例
 func BenchmarkArrayIntChunk(b *testing.B) {
-	a := []int{1, 2, 3, 4, 5}
+	input := []int{1, 2, 3, 4, 5}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		ArrayIntChunk(a, 3)
+		ArrayIntChunk(input, 3)
 	}
 }
 
@@ -163,4 +132,96 @@ func BenchmarkArrayIntFill(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		ArrayIntFill(arr, val, start, end)
 	}
+}
+
+func TestArrayFind(t *testing.T) {
+	t.Run("should filter elements that fail predicate", func(t *testing.T) {
+		input := []int{1, 2, 3, 4, 5, 6, 7, 8}
+		var output int
+
+		err := ArrayFind(input, &output, func(a int) bool {
+			return a == 1 // starts with
+		})
+		expected := 1
+		assert.NoError(t, err)
+		assert.Equal(t, expected, output)
+	})
+
+	t.Run("should struct types", func(t *testing.T) {
+		type person struct {
+			age int
+		}
+		input := []person{
+			{30},
+			{20},
+			{40},
+			{10},
+		}
+		var output person
+
+		err := ArrayFind(input, &output, func(p person) bool {
+			return p.age > 20
+		})
+		expected := person{30}
+
+		assert.NoError(t, err)
+		assert.Equal(t, expected, output)
+	})
+
+	t.Run("should validate predicate's arg", func(t *testing.T) {
+		input := []int{1, 2, 3, 4, 5, 6, 7, 8}
+		var output int
+
+		err := ArrayFind(input, &output, func(a string) bool {
+			return a == ""
+		})
+
+		assert.EqualError(t, err, "predicate function's first argument has to be the type (int) instead of (string)")
+	})
+
+	t.Run("should validate predicate's return type", func(t *testing.T) {
+		input := []int{1, 2, 3, 4, 5, 6, 7, 8}
+		var output int
+
+		{
+			err := ArrayFind(input, &output, func(a int) int {
+				return a
+			})
+			assert.EqualError(t, err, "predicate function should return only a (boolean) and not a (int)")
+		}
+		{
+			err := ArrayFind(input, &output, func(int) (int, bool) {
+				return 1, true
+			})
+			assert.EqualError(t, err, "predicate function should return only one return value - a boolean")
+		}
+	})
+
+	t.Run("should validate output's type", func(t *testing.T) {
+		input := []int{1, 2, 3, 4, 5, 6, 7, 8}
+		var output string
+
+		err := ArrayFind(input, &output, func(a int) bool {
+			return a == 0
+		})
+
+		assert.EqualError(t, err, "input slice (int) and output (string) should be of the same Type")
+	})
+
+	t.Run("should return error if element not found", func(t *testing.T) {
+		in := []int{1, 2, 3}
+		{
+			var out int
+
+			err := ArrayFind(in, &out, func(x int) bool { return x == 4 })
+
+			assert.EqualError(t, err, "element not found")
+		}
+		{
+			var out int
+			err := ArrayFind(in, &out, func(x int) bool { return x == 1 })
+			assert.NoError(t, err)
+		}
+	})
+
 }
