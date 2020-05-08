@@ -1,4 +1,5 @@
 ## Godash
+![image](./gopher.png)
 
 ### Example
 
@@ -26,8 +27,10 @@ func main() {
 
 * Array
   * [Chunk](https://github.com/xbc30/godash/blob/master/array.go#L43)
-  * [Diffenece]()
-  * [Fill]()
+  * [Diffenece](https://github.com/xbc30/godash/blob/master/array.go#L101)
+  * [Fill](https://github.com/xbc30/godash/blob/master/array.go#L147)
+  * [Find](https://github.com/xbc30/godash/blob/master/array.go#L165)
+  * [FindIndex](https://github.com/xbc30/godash/blob/master/array.go#L212)
 
 ### Unit Test & Benchmark Test
 
