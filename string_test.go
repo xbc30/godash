@@ -47,3 +47,25 @@ func TestStringEndsWith(t *testing.T) {
 		})
 	}
 }
+
+func TestStringStartsWith(t *testing.T) {
+	cases := []struct {
+		name   string
+		input  string
+		prefix string
+		end    int
+		expect bool
+	}{
+		{"StringStartsWith", "hello", "ello", 1, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			ret := StringStartsWith(c.input, c.prefix, c.end)
+			if !reflect.DeepEqual(ret, c.expect) {
+				t.Fatalf("expected: %v, but got: %v, with inputs: %v",
+					c.expect, ret, c.input)
+			}
+		})
+	}
+}

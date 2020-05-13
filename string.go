@@ -32,3 +32,14 @@ func StringEndsWith(input, suffix string, end int) bool {
 	newString := string([]byte(input)[:len(input)-end])
 	return strings.HasSuffix(newString, suffix)
 }
+
+/*
+ *@Method: StringStartsWith
+ *@Description:
+ *@Param: 1.
+ *@Return:
+ */
+func StringStartsWith(input, prefix string, start int) bool {
+	newString := string([]byte(input)[start:])
+	return strings.HasPrefix(newString, prefix)
+}
