@@ -44,7 +44,7 @@ func TestArrayIntChunk(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			ret := ArrayIntChunk(c.inputArr, c.inputChunk)
-			if !reflect.DeepEqual(ret, c.expect) {
+			if !reflect.DeepEqual(ret, c.expect) {	
 				t.Fatalf("expected: %v, but got: %v, with inputs: %v",
 					c.expect, ret, c.inputArr)
 			}

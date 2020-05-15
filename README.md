@@ -22,6 +22,21 @@ func main() {
 ```
 
 * interface{} Input
+```go
+package main
+
+import (
+  "fmt"
+
+  "github.com/xbc30/godash"
+)
+
+func main() {
+  input := []int{1,2,3,4,5}
+  output := godash.ArrayChunk(godash.ArrayIntToInterface(input), 2)
+  fmt.Println(output) // [][]interface{}{{1, 2}, {3, 4}, {5}}
+}
+```
 
 ### List
 
@@ -31,6 +46,10 @@ func main() {
   * [Fill](https://github.com/xbc30/godash/blob/master/array.go#L147)
   * [Find](https://github.com/xbc30/godash/blob/master/array.go#L165)
   * [FindIndex](https://github.com/xbc30/godash/blob/master/array.go#L212)
+* String
+  * [Capitalize](https://github.com/xbc30/godash/blob/master/string.go#L13)
+  * [StartsWith](https://github.com/xbc30/godash/blob/master/string.go#L31)
+  * [EndsWith](https://github.com/xbc30/godash/blob/master/string.go#L42)
 
 ### Unit Test & Benchmark Test
 
