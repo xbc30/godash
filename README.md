@@ -50,6 +50,7 @@ func main() {
   * [Capitalize](https://github.com/xbc30/godash/blob/master/string.go#L13)
   * [StartsWith](https://github.com/xbc30/godash/blob/master/string.go#L31)
   * [EndsWith](https://github.com/xbc30/godash/blob/master/string.go#L42)
+* [Map](https://github.com/xbc30/godash/blob/master/map.go#L8)
 
 ### Unit Test & Benchmark Test
 
